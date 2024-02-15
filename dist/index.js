@@ -31,7 +31,7 @@ exports.Route = Route;
 ;
 class ServerShell {
     /**
-     * Creates an instance of ServerShell.
+     * Creates an instance of ServerShell using the specified config. Config can be omitted, in which case the default config will be used.
      * @date 2/15/2024 - 1:18:09 PM
      *
      * @constructor
@@ -102,8 +102,10 @@ class ServerShell {
             }
             else if (dirEntry.isFile()) {
                 const contents = new TextDecoder('utf-8').decode((0, node_fs_1.readFileSync)(pathnameDir));
-                const extension = entry.split('.')[1];
-                const name = entry.split('.')[0];
+                const splitFileName = entry.split('.');
+                const extension = splitFileName[splitFileName.length - 1];
+                splitFileName.pop();
+                const name = splitFileName.join('.');
                 if (name == "index" && extension == "html") {
                     pathnameRoute = (0, node_path_1.join)(pathnameRoute, '..');
                 }
@@ -125,7 +127,7 @@ class ServerShell {
      */
     get(path, listener) {
         this.routes.forEach((route) => {
-            if (route.path == path) {
+            if (route.path == path && route.method == "GET") {
                 throw new RouteAlreadyBoundError(path);
             }
         });
@@ -142,7 +144,7 @@ class ServerShell {
      */
     post(path, listener) {
         this.routes.forEach((route) => {
-            if (route.path == path) {
+            if (route.path == path && route.method == "POST") {
                 throw new RouteAlreadyBoundError(path);
             }
         });
@@ -159,7 +161,7 @@ class ServerShell {
      */
     put(path, listener) {
         this.routes.forEach((route) => {
-            if (route.path == path) {
+            if (route.path == path && route.method == "PUT") {
                 throw new RouteAlreadyBoundError(path);
             }
         });
@@ -176,7 +178,7 @@ class ServerShell {
      */
     delete(path, listener) {
         this.routes.forEach((route) => {
-            if (route.path == path) {
+            if (route.path == path && route.method == "DELETE") {
                 throw new RouteAlreadyBoundError(path);
             }
         });

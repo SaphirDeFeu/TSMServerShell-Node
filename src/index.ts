@@ -107,8 +107,10 @@ export class ServerShell {
         this.useStatic(pathnameDir, pathnameRoute);
       } else if(dirEntry.isFile()) {
         const contents = new TextDecoder('utf-8').decode(readFileSync(pathnameDir));
-        const extension = entry.split('.')[1];
-        const name = entry.split('.')[0];
+        const splitFileName = entry.split('.');
+        const extension = splitFileName[splitFileName.length - 1];
+        splitFileName.pop();
+        const name = splitFileName.join('.');
         if(name == "index" && extension == "html") {
           pathnameRoute = join(pathnameRoute, '..');
         }
@@ -131,7 +133,7 @@ export class ServerShell {
    */
   get(path: string, listener: (req: http.IncomingMessage, res: http.ServerResponse) => void) {
     this.routes.forEach((route) => {
-      if(route.path == path) {
+      if(route.path == path && route.method == "GET") {
         throw new RouteAlreadyBoundError(path);
       }
     });
@@ -148,7 +150,7 @@ export class ServerShell {
    */
   post(path: string, listener: (req: http.IncomingMessage, res: http.ServerResponse) => void) {
     this.routes.forEach((route) => {
-      if(route.path == path) {
+      if(route.path == path && route.method == "POST") {
         throw new RouteAlreadyBoundError(path);
       }
     });
@@ -165,7 +167,7 @@ export class ServerShell {
    */
   put(path: string, listener: (req: http.IncomingMessage, res: http.ServerResponse) => void) {
     this.routes.forEach((route) => {
-      if(route.path == path) {
+      if(route.path == path && route.method == "PUT") {
         throw new RouteAlreadyBoundError(path);
       }
     });
@@ -182,7 +184,7 @@ export class ServerShell {
    */
   delete(path: string, listener: (req: http.IncomingMessage, res: http.ServerResponse) => void) {
     this.routes.forEach((route) => {
-      if(route.path == path) {
+      if(route.path == path && route.method == "DELETE") {
         throw new RouteAlreadyBoundError(path);
       }
     });
