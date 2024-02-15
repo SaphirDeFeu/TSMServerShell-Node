@@ -1,0 +1,15 @@
+{
+  "name": "tsmservershell",
+  "version": "1.1.0",
+  "description": "Minimalist server creation and management library",
+  "main": "dist/index.js",
+  "scripts": {
+    "test": "node test/mod.js"
+  },
+  "keywords": [
+    "http",
+    "server"
+  ],
+  "author": "TSMStudios",
+  "license": "ISC"
+}
