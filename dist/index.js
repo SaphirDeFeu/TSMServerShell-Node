@@ -127,7 +127,7 @@ class ServerShell {
      */
     get(path, listener) {
         this.routes.forEach((route) => {
-            if (route.path == path && route.method == "GET") {
+            if (route.path == path && (route.method == "GET" || route.method == "ANY")) {
                 throw new RouteAlreadyBoundError(path);
             }
         });
@@ -144,7 +144,7 @@ class ServerShell {
      */
     post(path, listener) {
         this.routes.forEach((route) => {
-            if (route.path == path && route.method == "POST") {
+            if (route.path == path && (route.method == "POST" || route.method == "ANY")) {
                 throw new RouteAlreadyBoundError(path);
             }
         });
@@ -161,7 +161,7 @@ class ServerShell {
      */
     put(path, listener) {
         this.routes.forEach((route) => {
-            if (route.path == path && route.method == "PUT") {
+            if (route.path == path && (route.method == "PUT" || route.method == "ANY")) {
                 throw new RouteAlreadyBoundError(path);
             }
         });
@@ -178,7 +178,7 @@ class ServerShell {
      */
     delete(path, listener) {
         this.routes.forEach((route) => {
-            if (route.path == path && route.method == "DELETE") {
+            if (route.path == path && (route.method == "DELETE" || route.method == "ANY")) {
                 throw new RouteAlreadyBoundError(path);
             }
         });
