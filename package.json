@@ -4,11 +4,11 @@
   "description": "Minimalist server creation and management library",
   "main": "dist/index.js",
   "scripts": {
-    "test": "node test/mod.js"
+    "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/SaphirDeFeu/TSMServerShell-Node"
+    "url": "git+https://github.com/SaphirDeFeu/TSMServerShell-Node.git"
   },
   "keywords": [
     "http",
@@ -17,6 +17,7 @@
   "author": "TSMStudios",
   "license": "ISC",
   "devDependencies": {
+    "@types/node": "^20.11.18",
     "typescript": "^5.3.3"
   }
 }
