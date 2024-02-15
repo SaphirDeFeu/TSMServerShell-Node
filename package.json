@@ -1,6 +1,6 @@
 {
   "name": "tsmservershell",
-  "version": "1.1.0",
+  "version": "1.1.0.1",
   "description": "Minimalist server creation and management library",
   "main": "dist/index.js",
   "scripts": {
