@@ -6,10 +6,17 @@
   "scripts": {
     "test": "node test/mod.js"
   },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/SaphirDeFeu/TSMServerShell-Node"
+  },
   "keywords": [
     "http",
     "server"
   ],
   "author": "TSMStudios",
-  "license": "ISC"
+  "license": "ISC",
+  "devDependencies": {
+    "typescript": "^5.3.3"
+  }
 }
