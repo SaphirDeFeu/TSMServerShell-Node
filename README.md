@@ -14,7 +14,7 @@ const app = new ServerShell()
 
 app.listen()
 ```
-You can use a specific configuration, using `Deno.ServeOptions` as a basis :
+You can use a specific configuration, using `http.ServerOptions` as a basis :
 ```js
 const app = new ServerShell({
   port: 3000
@@ -24,20 +24,20 @@ app.listen()
 ```
 ### Bind routes to the server :
 Use the public methods to add routes going to a specific path of your application, and bind them to a function that will run for all incoming requests going to that route.  
-The `req` parameter represents the Request object, and the `info` parameter represents `Deno.ServeHandlerInfo`
+The `req` parameter represents the Request object, and the `res` parameter represents the Response object.
 ```js
-app.get("/get", (req, info) => {
+app.get("/get", (req, res) => {
   // Route callback
 })
 
-app.post("/post", (req, info) => {
+app.post("/post", (req, res) => {
   // Route callback
 })
 ```
 ### Add middleware :
 The middleware function will be called for every incoming requests
 ```js
-app.use((req, info) => {
+app.use((req, res) => {
   // Middleware function
 })
 ```
