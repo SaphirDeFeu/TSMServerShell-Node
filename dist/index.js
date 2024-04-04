@@ -28,7 +28,6 @@ class Route {
     }
 }
 exports.Route = Route;
-;
 class ServerShell {
     /**
      * Creates an instance of ServerShell using the specified config. Config can be omitted, in which case the default config will be used.
@@ -66,7 +65,7 @@ class ServerShell {
             }
             if (!found) {
                 res.writeHead(404, {
-                    'Content-Type': 'text/html',
+                    "Content-Type": "text/html",
                 });
                 res.end(`Cannot get ${req.url}`);
             }
@@ -101,18 +100,55 @@ class ServerShell {
                 this.useStatic(pathnameDir, pathnameRoute);
             }
             else if (dirEntry.isFile()) {
-                const contents = new TextDecoder('utf-8').decode((0, node_fs_1.readFileSync)(pathnameDir));
-                const splitFileName = entry.split('.');
+                const contents = new TextDecoder("utf-8").decode((0, node_fs_1.readFileSync)(pathnameDir));
+                const splitFileName = entry.split(".");
                 const extension = splitFileName[splitFileName.length - 1];
                 splitFileName.pop();
-                const name = splitFileName.join('.');
+                const name = splitFileName.join(".");
                 if (name == "index" && extension == "html") {
-                    pathnameRoute = (0, node_path_1.join)(pathnameRoute, '..');
+                    pathnameRoute = (0, node_path_1.join)(pathnameRoute, "..");
                 }
-                this.get(pathnameRoute.replaceAll('\\', '/'), (req, res) => {
+                this.get(pathnameRoute.replaceAll("\\", "/"), (req, res) => {
                     res.writeHead(200, {
-                        'Content-Type': MIMEFromExt(extension),
-                    }).end(contents);
+                        "Content-Type": MIMEFromExt(extension),
+                        "Content-Length": Buffer.byteLength(contents),
+                    });
+                    res.end(contents);
+                });
+            }
+        }
+    }
+    /**
+     * Equivalent to `useStatic` but allows editing your assets without needing a server reload
+     * @date 4/4/2024 - 6:03:50 PM
+     *
+     * @param {string} directory - The root directory of the assets
+     * @param {string} route - The route from which to start scanning. This is the equivalent of removing the `directory` folder from the resulting route
+     */
+    useDynamic(directory, route) {
+        const contents = (0, node_fs_1.readdirSync)(directory);
+        for (const entry of contents) {
+            const pathnameDir = (0, node_path_1.join)(directory, entry);
+            let pathnameRoute = (0, node_path_1.join)(route, entry);
+            const dirEntry = (0, node_fs_1.lstatSync)(pathnameDir);
+            if (dirEntry.isDirectory()) {
+                this.useDynamic(pathnameDir, pathnameRoute);
+            }
+            else if (dirEntry.isFile()) {
+                const splitFileName = entry.split(".");
+                const extension = splitFileName[splitFileName.length - 1];
+                splitFileName.pop();
+                const name = splitFileName.join(".");
+                if (name == "index" && extension == "html") {
+                    pathnameRoute = (0, node_path_1.join)(pathnameRoute, "..");
+                }
+                this.get(pathnameRoute.replaceAll("\\", "/"), (req, res) => {
+                    const assetContents = new TextDecoder("utf-8").decode((0, node_fs_1.readFileSync)(pathnameDir));
+                    res.writeHead(200, {
+                        "Content-Type": MIMEFromExt(extension),
+                        "Content-Length": Buffer.byteLength(assetContents),
+                    });
+                    res.end(assetContents);
                 });
             }
         }
@@ -127,13 +163,13 @@ class ServerShell {
      */
     get(path, listener) {
         this.routes.forEach((route) => {
-            if (route.path == path && (route.method == "GET" || route.method == "ANY")) {
+            if (route.path == path &&
+                (route.method == "GET" || route.method == "ANY")) {
                 throw new RouteAlreadyBoundError(path);
             }
         });
         this.routes.push(new Route(path, "GET", listener));
     }
-    ;
     /**
      * Binds a new route at `path` to a POST listener
      * @date 2/14/2024 - 7:09:49 PM
@@ -144,13 +180,13 @@ class ServerShell {
      */
     post(path, listener) {
         this.routes.forEach((route) => {
-            if (route.path == path && (route.method == "POST" || route.method == "ANY")) {
+            if (route.path == path &&
+                (route.method == "POST" || route.method == "ANY")) {
                 throw new RouteAlreadyBoundError(path);
             }
         });
         this.routes.push(new Route(path, "POST", listener));
     }
-    ;
     /**
      * Binds a new route at `path` to an OPTIONS listener
      * @date 2/14/2024 - 7:09:49 PM
@@ -161,13 +197,13 @@ class ServerShell {
      */
     options(path, listener) {
         this.routes.forEach((route) => {
-            if (route.path == path && (route.method == "OPTIONS" || route.method == "ANY")) {
+            if (route.path == path &&
+                (route.method == "OPTIONS" || route.method == "ANY")) {
                 throw new RouteAlreadyBoundError(path);
             }
         });
         this.routes.push(new Route(path, "OPTIONS", listener));
     }
-    ;
     /**
      * Binds a new route at `path` to a PUT listener
      * @date 2/14/2024 - 7:09:49 PM
@@ -178,13 +214,13 @@ class ServerShell {
      */
     put(path, listener) {
         this.routes.forEach((route) => {
-            if (route.path == path && (route.method == "PUT" || route.method == "ANY")) {
+            if (route.path == path &&
+                (route.method == "PUT" || route.method == "ANY")) {
                 throw new RouteAlreadyBoundError(path);
             }
         });
         this.routes.push(new Route(path, "PUT", listener));
     }
-    ;
     /**
      * Binds a new route at `path` to a DELETE listener
      * @date 2/14/2024 - 7:09:49 PM
@@ -195,13 +231,13 @@ class ServerShell {
      */
     delete(path, listener) {
         this.routes.forEach((route) => {
-            if (route.path == path && (route.method == "DELETE" || route.method == "ANY")) {
+            if (route.path == path &&
+                (route.method == "DELETE" || route.method == "ANY")) {
                 throw new RouteAlreadyBoundError(path);
             }
         });
         this.routes.push(new Route(path, "DELETE", listener));
     }
-    ;
     /**
      * Binds a new route at `path` to a listener for any request method
      * @date 2/14/2024 - 7:09:49 PM
@@ -218,50 +254,74 @@ class ServerShell {
         });
         this.routes.push(new Route(path, "ANY", listener));
     }
-    ;
 }
 exports.ServerShell = ServerShell;
 function MIMEFromExt(extension) {
     switch (extension) {
         // text/
         case "html":
-        case "htm": return 'text/html';
-        case "css": return 'text/css';
+        case "htm":
+            return "text/html";
+        case "css":
+            return "text/css";
         case "js":
-        case "mjs": return 'text/javascript';
-        case "txt": return 'text/plain';
+        case "mjs":
+            return "text/javascript";
+        case "txt":
+            return "text/plain";
         // image/
-        case "svg": return 'image/svg+xml';
-        case "apng": return 'image/apng';
-        case "png": return 'image/png';
-        case "gif": return 'image/gif';
+        case "svg":
+            return "image/svg+xml";
+        case "apng":
+            return "image/apng";
+        case "png":
+            return "image/png";
+        case "gif":
+            return "image/gif";
         case "jpg":
-        case "jpeg": return 'image/jpeg';
-        case "ico": return 'image/vnd.microsoft.icon';
-        case "mp4": return 'video/mp4';
-        case "mpeg": return 'video/mpeg';
-        case "ogv": return 'video/ogg';
-        case "mp3": return 'audio/mpeg';
-        case "oga": return 'audio/ogg';
+        case "jpeg":
+            return "image/jpeg";
+        case "ico":
+            return "image/vnd.microsoft.icon";
+        case "mp4":
+            return "video/mp4";
+        case "mpeg":
+            return "video/mpeg";
+        case "ogv":
+            return "video/ogg";
+        case "mp3":
+            return "audio/mpeg";
+        case "oga":
+            return "audio/ogg";
         // application/
-        case "json": return 'application/json';
-        case "xml": return 'application/xml';
-        case "zip": return 'application/zip';
-        case "7z": return 'application/x-7z-compressed';
-        case "rar": return 'application/vnd.rar';
-        case "tar": return 'application/x-tar';
-        case "gz": return 'application/gzip';
-        case "php": return 'application/x-httpd-php';
-        case "pdf": return 'application/pdf';
-        case "sh": return 'application/x-sh';
+        case "json":
+            return "application/json";
+        case "xml":
+            return "application/xml";
+        case "zip":
+            return "application/zip";
+        case "7z":
+            return "application/x-7z-compressed";
+        case "rar":
+            return "application/vnd.rar";
+        case "tar":
+            return "application/x-tar";
+        case "gz":
+            return "application/gzip";
+        case "php":
+            return "application/x-httpd-php";
+        case "pdf":
+            return "application/pdf";
+        case "sh":
+            return "application/x-sh";
         // font/
-        case "otf": return 'font/otf';
-        case "ttf": return 'font/ttf';
-        default:
-            {
-                console.log(`Encountered unknown extension while generating static routes: .${extension} - If you want this fixed as quickly as possible, open an issue at https://github.com/SaphirDeFeu/TSMServerShell-Node/issues`);
-                return 'text/plain';
-            }
-            ;
+        case "otf":
+            return "font/otf";
+        case "ttf":
+            return "font/ttf";
+        default: {
+            console.log(`Encountered unknown extension while generating static routes: .${extension} - If you want this fixed as quickly as possible, open an issue at https://github.com/SaphirDeFeu/TSMServerShell-Node/issues`);
+            return "text/plain";
+        }
     }
 }
